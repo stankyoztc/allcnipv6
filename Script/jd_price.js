@@ -1,6 +1,4 @@
-/*
-脚本引用 https://raw.githubusercontent.com/githubdulong/Script/master/jd_price.js
-*/
+
 // 2024-05-15 优化版
 const DEBUG_MODE = false; // 调试开关
 
