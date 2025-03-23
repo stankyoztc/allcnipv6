@@ -73,7 +73,6 @@ mhgotv_enable = switch,true,false,tag=芒果TV
 mafgwo_enable = switch,true,false,tag=马蜂窝
 mdmd_enable = switch,true,false,tag=脉脉
 pupuicui_enable = switch,true,false,tag=朴朴超市
-qidmduuu_enable = switch,true,false,tag=起点读书
 quda_enable = switch,true,false,tag=去哒
 reddit_enable = switch,true,false,tag=Reddit
 rfrfuipk_enable = switch,true,false,tag=人人视频
@@ -81,7 +80,6 @@ soul_enable = switch,true,false,tag=Soul
 sudaxnyr_enable = switch,true,false,tag=苏打校园APP
 ufmevidemd_enable = switch,true,false,tag=什么值得买
 lvtusvuftk_enable = switch,true,false,tag=旅途随身听
-testFlight_enable = switch,true,false,tag=TestFlight
 tcbc_enable = switch,true,false,tag=淘宝
 tgxyxbwf_enable = switch,true,false,tag=腾讯新闻
 vgtime_enable = switch,true,false,tag=vgTime
