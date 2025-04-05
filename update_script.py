@@ -1,39 +1,24 @@
-name: Daily IPv6 Update
+import requests
+from datetime import datetime
 
-on:
-  schedule:
-    - cron: '0 0 * * *'  # 每天UTC时间00:00运行
-  workflow_dispatch:  # 允许手动触发
+url = "https://ispip.clang.cn/all_cn_ipv6.txt"
 
-jobs:
-  update:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        persist-credentials: false
-
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
-
-    - name: Run update script
-      run: |
-        python update_script.py
+try:
+    # 下载IP列表
+    response = requests.get(url)
+    response.raise_for_status()
+    
+    # 处理内容
+    processed = ["payload:\n"]
+    for line in response.text.splitlines():
+        if line.strip():  # 忽略空行
+            processed.append(f"  - IP-CIDR6,{line}\n")
+    
+    # 写入文件
+    with open("allcnipv6.list", "w", encoding="utf-8") as f:
+        f.writelines(processed)
         
-    - name: Commit changes
-      run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
-        git add allcnipv6.list
-        git commit -m "每日自动更新IPv6列表 $(date +'%Y-%m-%d')" || echo "没有变化无需提交"
-        git push origin main
-
-    - name: Clean up other files
-      run: |
-        # 保留必要文件
-        git ls-files | grep -v -E "allcnipv6.list|.github/workflows/update.yml|update_script.py" | xargs git rm -f
-        git commit -m "清理非必要文件" || echo "无需清理"
-        git push origin main
+    print(f"更新成功，共处理 {len(processed)-1} 条记录")
+except Exception as e:
+    print(f"更新失败: {str(e)}")
+    raise
