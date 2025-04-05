@@ -2,43 +2,31 @@ name: Daily IPv6 Update
 
 on:
   schedule:
-    - cron: '0 0 * * *'
-  workflow_dispatch:
+    - cron: '0 0 * * *'  # 每天UTC时间00:00运行
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-      with:
-        persist-credentials: true
-        fetch-depth: 0
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-    - name: 设置Python环境
+    - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.x'
+        python-version: '3.10'
 
-    - name: 安装依赖
+    - name: Install dependencies
       run: pip install requests
 
-    - name: 运行更新脚本
-      run: python update_script.py
+    - name: Run IP updater
+      run: python update_ips.py
 
-    - name: 选择性提交
+    - name: Commit changes
       run: |
-        # 仅检测目标文件的变更
-        if git diff --exit-code --quiet allcnipv6.list; then
-          echo "没有检测到变更"
-          exit 0
-        fi
-
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
         git add allcnipv6.list
-        git commit -m "📌 自动更新IPv6列表 $(date +'%F')"
-        
-        # 安全推送设置
-        remote_repo="https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
-        git remote set-url origin "$remote_repo"
-        git push origin HEAD:main
+        git commit -m "自动更新中国IPv6列表 - $(date +'%Y-%m-%d %H:%M:%S')"
+        git push
