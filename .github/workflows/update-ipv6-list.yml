@@ -18,11 +18,7 @@ jobs:
         curl -s https://ispip.clang.cn/all_cn_ipv6.txt > ipv6.txt
         echo "payload:" > allcnipv6.list
         sed 's/^/  - IP-CIDR6,/' ipv6.txt >> allcnipv6.list
-
-    - name: Remove other files
-      run: |
-        find . -type f ! -name 'allcnipv6.list' ! -path './.git/*' -delete
-        find . -type d -empty -delete
+        rm ipv6.txt  # 删除临时文件
 
     - name: Commit and push changes
       run: |
