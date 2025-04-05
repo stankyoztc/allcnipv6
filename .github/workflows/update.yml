@@ -3,7 +3,7 @@ name: Daily IPv6 Update
 on:
   schedule:
     - cron: '0 0 * * *'  # 每天UTC时间00:00运行
-  workflow_dispatch:  # 允许手动触发
+  workflow_dispatch:
 
 jobs:
   update:
@@ -12,7 +12,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        persist-credentials: false
+        persist-credentials: true  # 必须启用凭证保存
+        fetch-depth: 0  # 获取完整提交历史
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -24,18 +25,24 @@ jobs:
 
     - name: Run update script
       run: python update_script.py
-        
+
     - name: Commit changes
       run: |
+        # 配置Git身份
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
+        
+        # 添加修改并提交
         git add allcnipv6.list
         git commit -m "每日自动更新IPv6列表 $(date +'%Y-%m-%d')" || echo "没有变化无需提交"
-        git push origin main
+        
+        # 使用GITHUB_TOKEN推送
+        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+        git push origin HEAD:main
 
     - name: Clean up other files
       run: |
         # 保留必要文件
         git ls-files | grep -v -E "allcnipv6.list|.github/workflows/update.yml|update_script.py" | xargs git rm -f
         git commit -m "清理非必要文件" || echo "无需清理"
-        git push origin main
+        git push origin HEAD:main
