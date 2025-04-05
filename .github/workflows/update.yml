@@ -2,47 +2,43 @@ name: Daily IPv6 Update
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # 每天UTC时间00:00运行
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
       with:
-        persist-credentials: true  # 必须启用凭证保存
-        fetch-depth: 0  # 获取完整提交历史
+        persist-credentials: true
+        fetch-depth: 0
 
-    - name: Set up Python
+    - name: 设置Python环境
       uses: actions/setup-python@v4
       with:
         python-version: '3.x'
 
-    - name: Install dependencies
+    - name: 安装依赖
       run: pip install requests
 
-    - name: Run update script
+    - name: 运行更新脚本
       run: python update_script.py
 
-    - name: Commit changes
+    - name: 选择性提交
       run: |
-        # 配置Git身份
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
-        
-        # 添加修改并提交
-        git add allcnipv6.list
-        git commit -m "每日自动更新IPv6列表 $(date +'%Y-%m-%d')" || echo "没有变化无需提交"
-        
-        # 使用GITHUB_TOKEN推送
-        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-        git push origin HEAD:main
+        # 仅检测目标文件的变更
+        if git diff --exit-code --quiet allcnipv6.list; then
+          echo "没有检测到变更"
+          exit 0
+        fi
 
-    - name: Clean up other files
-      run: |
-        # 保留必要文件
-        git ls-files | grep -v -E "allcnipv6.list|.github/workflows/update.yml|update_script.py" | xargs git rm -f
-        git commit -m "清理非必要文件" || echo "无需清理"
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add allcnipv6.list
+        git commit -m "📌 自动更新IPv6列表 $(date +'%F')"
+        
+        # 安全推送设置
+        remote_repo="https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+        git remote set-url origin "$remote_repo"
         git push origin HEAD:main
