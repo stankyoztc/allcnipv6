@@ -12,6 +12,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.PAT }}  # 使用存储在 Secrets 中的 PAT
 
     - name: Fetch and process IPv6 list
       run: |
