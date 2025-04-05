@@ -19,9 +19,11 @@ jobs:
       with:
         python-version: '3.x'
 
+    - name: Install dependencies
+      run: pip install requests
+
     - name: Run update script
-      run: |
-        python update_script.py
+      run: python update_script.py
         
     - name: Commit changes
       run: |
