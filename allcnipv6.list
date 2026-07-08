@@ -1522,6 +1522,7 @@ payload:
   - IP-CIDR6,2a10:ccc0:ccc::/48
   - IP-CIDR6,2a12:3fc2:aa40::/44
   - IP-CIDR6,2a12:cb41::/44
+  - IP-CIDR6,2a12:cb41:600::/44
   - IP-CIDR6,2a12:cb41:1200::/44
   - IP-CIDR6,2a12:cb41:1300::/43
   - IP-CIDR6,2a12:cb41:13f0::/44
@@ -1535,7 +1536,7 @@ payload:
   - IP-CIDR6,2a13:1801:200::/44
   - IP-CIDR6,2a13:1802::/43
   - IP-CIDR6,2a13:8c87::/32
-  - IP-CIDR6,2a13:9500:194::/48
+  - IP-CIDR6,2a13:9500:194::/47
   - IP-CIDR6,2a13:a5c3:f000::/40
   - IP-CIDR6,2a13:a5c3:ff41::/48
   - IP-CIDR6,2a13:a5c3:ff50::/44
